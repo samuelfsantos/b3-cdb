@@ -16,7 +16,7 @@ namespace B3.Cdb.Domain.Validators
             RuleFor(i => i.ValorInicial)
                 .GreaterThan(0).WithMessage("O valor inicial deve ser maior que zero.");
 
-            RuleFor(i => i.Meses)
+            RuleFor(i => i.PrazoMeses)
                 .GreaterThan(1).WithMessage("O prazo em meses deve ser maior que 1.");
         }
 

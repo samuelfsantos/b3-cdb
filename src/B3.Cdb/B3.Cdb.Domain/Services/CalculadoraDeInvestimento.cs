@@ -4,19 +4,24 @@ namespace B3.Cdb.Domain.Services
 {
     public class CalculadoraDeInvestimento : ICalculadoraDeInvestimento
     {
-        private const decimal CDI = 0.9m;
-        private const decimal TB = 1.08m; // 108%
+        private const decimal CDI = 0.009m; // CDI como taxa mensal, 0.9% por mês
+        private const decimal TB = 1.08m;   // 108%
 
-        public (decimal valorBruto, decimal valorLiquido) CalcularInvestimento(Investimento investimento)
+        public (decimal valorBruto, decimal valorLiquido) Calcular(Investimento investimento)
         {
+            if (investimento.ValorInicial <= 0 || investimento.PrazoMeses <= 1)
+            {
+                return (0, 0);
+            }
+
             decimal valorFinal = investimento.ValorInicial;
-            for (int i = 0; i < investimento.Meses; i++)
+            for (int i = 0; i < investimento.PrazoMeses; i++)
             {
                 valorFinal *= (1 + (CDI * TB));
             }
 
             decimal valorBruto = valorFinal;
-            decimal imposto = CalcularImposto(investimento.Meses, valorBruto - investimento.ValorInicial);
+            decimal imposto = CalcularImposto(investimento.PrazoMeses, valorBruto - investimento.ValorInicial);
             decimal valorLiquido = valorBruto - imposto;
 
             return (valorBruto, valorLiquido);
