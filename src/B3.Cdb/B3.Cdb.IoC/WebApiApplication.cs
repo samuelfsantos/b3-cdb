@@ -12,7 +12,7 @@ namespace B3.Cdb.IoC
 {
     public static class IocConfig
     {
-        public static void RegisterDependencies()
+        public static void RegisterDependenciesApi()
         {
             // Configuração do Simple Injector
             var container = new Container();
@@ -30,6 +30,22 @@ namespace B3.Cdb.IoC
 
             GlobalConfiguration.Configuration.DependencyResolver =
                 new SimpleInjectorWebApiDependencyResolver(container);
+        }
+
+        public static Container RegisterDependenciesTest()
+        {
+            // Configuração do Simple Injector
+            var container = new Container();
+            container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
+
+            // Registrar serviços e dependências
+            container.Register<IInvestimentoValidator, InvestimentoValidator>();
+            container.Register<ICalculadoraDeInvestimento, CalculadoraDeInvestimento>();
+            container.Register<IInvestimentoApplication, InvestimentoApplication>();
+            container.Register<INotifier, Notifier>();
+            container.Verify();
+
+            return container;
         }
     }
 }

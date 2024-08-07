@@ -17,7 +17,7 @@ namespace B3.Cdb.Api
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             // Configura o IoC container
-            IocConfig.RegisterDependencies();
+            IocConfig.RegisterDependenciesApi();
         }
     }
 }
