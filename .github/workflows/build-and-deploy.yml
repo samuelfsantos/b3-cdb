@@ -25,16 +25,22 @@ jobs:
     - name: Restore NuGet packages
       run: nuget restore src/B3.Cdb/B3.Cdb.sln
 
-    - name: Build solution
-      run: msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj /p:Configuration=Release
+    - name: Build solution with detailed log
+      run: msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj /p:Configuration=Release /v:diag
 
-    - name: List solution directory before publishing
+    - name: List solution directory after build
       run: dir src\B3.Cdb\B3.Cdb.Api\
 
     - name: List build output files
-      run: dir src\B3.Cdb\B3.Cdb.Api\bin\Release\ || echo "No build output found."
+      run: |
+        if (Test-Path src\B3.Cdb\B3.Cdb.Api\bin\Release\) {
+          dir src\B3.Cdb\B3.Cdb.Api\bin\Release\
+        } else {
+          echo "No build output found."
+        }
 
     - name: Publish build artifacts
+      if: success()
       uses: actions/upload-artifact@v2
       with:
         name: B3CdbApi
@@ -50,7 +56,12 @@ jobs:
       uses: actions/checkout@v2
 
     - name: List downloaded artifacts
-      run: dir src\B3.Cdb\B3.Cdb.Api\bin\Release\ || echo "No downloaded artifacts found."
+      run: |
+        if (Test-Path src\B3.Cdb\B3.Cdb.Api\bin\Release\) {
+          dir src\B3.Cdb\B3.Cdb.Api\bin\Release\
+        } else {
+          echo "No downloaded artifacts found."
+        }
 
     - name: Download build artifacts
       uses: actions/download-artifact@v2
