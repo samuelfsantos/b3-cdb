@@ -28,6 +28,12 @@ jobs:
     - name: Build solution
       run: msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj /p:Configuration=Release
 
+    - name: List solution directory before publishing
+      run: dir src\B3.Cdb\B3.Cdb.Api\
+
+    - name: List build output files
+      run: dir src\B3.Cdb\B3.Cdb.Api\bin\Release\ || echo "No build output found."
+
     - name: Publish build artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -43,8 +49,8 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
-    - name: List build output files
-      run: dir src\B3.Cdb\B3.Cdb.Api\bin\Release\
+    - name: List downloaded artifacts
+      run: dir src\B3.Cdb\B3.Cdb.Api\bin\Release\ || echo "No downloaded artifacts found."
 
     - name: Download build artifacts
       uses: actions/download-artifact@v2
