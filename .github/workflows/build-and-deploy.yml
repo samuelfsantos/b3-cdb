@@ -55,33 +55,22 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
-    - name: List downloaded artifacts 1
-      run: |
-        if (Test-Path src\B3.Cdb\B3.Cdb.Api\bin\Release\) {
-          dir src\B3.Cdb\B3.Cdb.Api\bin\Release\
-        } else {
-          echo "No downloaded artifacts found."
-        }
-
     - name: Download build artifacts
       uses: actions/download-artifact@v2
       with:
         name: B3CdbApi
-        path: ./downloaded_artifacts/
+        path: downloaded_artifacts
 
     - name: List current directory
       run: dir
 
-    - name: List downloaded artifacts 2
+    - name: List downloaded artifacts
       run: |
-        if (Test-Path B3CdbApi) {
-          dir B3CdbApi
+        if (Test-Path downloaded_artifacts) {
+          dir downloaded_artifacts /s
         } else {
           echo "No downloaded artifacts found."
-        }
-        
-    - name: List all downloaded artifacts
-      run: dir downloaded_artifacts /s
+        }        
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
