@@ -4,16 +4,18 @@ import { Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { CalculoInvestimentoRequest } from '../models/CalculoInvestimentoRequest';
 import { CalculoInvestimentoResponse } from '../models/CalculoInvestimentoResponse';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InvestimentoService {
-  private apiUrl = 'https://localhost:44310/api/v1/investmentos/cdb';
+  private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   calcularInvestimento(request: CalculoInvestimentoRequest): Observable<CalculoInvestimentoResponse> {
+    //console.log(this.apiUrl);
     return this.http.post<CalculoInvestimentoResponse>(this.apiUrl, request);
   }
 
