@@ -32,13 +32,17 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: B3CdbApi
-        path: src/B3.Cdb/B3.Cdb.Api/bin/Release/
+        path: src/B3.Cdb/B3.Cdb.Api/bin/Release/*
+        retention-days: 1
 
   deploy:
     runs-on: windows-latest
     needs: build
 
     steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
     - name: Download build artifacts
       uses: actions/download-artifact@v2
       with:
@@ -49,7 +53,7 @@ jobs:
       with:
         app-name: b3-cdb-api
         slot-name: production
-        package: ./src/B3.Cdb/B3.Cdb.Api/bin/Release/
+        package: src/B3.Cdb/B3.Cdb.Api/bin/Release/
         publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
 
 
