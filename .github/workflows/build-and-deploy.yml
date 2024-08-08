@@ -26,7 +26,7 @@ jobs:
       run: nuget restore src/B3.Cdb/B3.Cdb.sln
 
     - name: Build solution with detailed log
-      run: msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj /p:Configuration=Release /v:diag
+      run: msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj /p:Configuration=Release /v:detailed
 
     - name: List solution directory after build
       run: dir src\B3.Cdb\B3.Cdb.Api\
@@ -55,7 +55,7 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v2
 
-    - name: List downloaded artifacts
+    - name: List downloaded artifacts 1
       run: |
         if (Test-Path src\B3.Cdb\B3.Cdb.Api\bin\Release\) {
           dir src\B3.Cdb\B3.Cdb.Api\bin\Release\
@@ -67,6 +67,14 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: B3CdbApi
+
+    - name: List downloaded artifacts 2
+      run: |
+        if (Test-Path B3CdbApi) {
+          dir B3CdbApi
+        } else {
+          echo "No downloaded artifacts found."
+        }
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
