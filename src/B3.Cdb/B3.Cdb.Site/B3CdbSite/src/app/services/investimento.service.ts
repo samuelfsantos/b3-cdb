@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ToastrService } from 'ngx-toastr';
 import { CalculoInvestimentoRequest } from '../models/CalculoInvestimentoRequest';
 import { CalculoInvestimentoResponse } from '../models/CalculoInvestimentoResponse';
 
@@ -11,21 +11,21 @@ import { CalculoInvestimentoResponse } from '../models/CalculoInvestimentoRespon
 export class InvestimentoService {
   private apiUrl = 'https://localhost:44310/api/v1/investmentos/cdb';
 
-  constructor(private http: HttpClient, private snackBar: MatSnackBar) { }
+  constructor(private http: HttpClient, private toastr: ToastrService) { }
 
   calcularInvestimento(request: CalculoInvestimentoRequest): Observable<CalculoInvestimentoResponse> {
     return this.http.post<CalculoInvestimentoResponse>(this.apiUrl, request);
   }
 
-  mostrarErro(mensagem: string) {
-    const mensagens = mensagem.split(',').map(m => m.trim()).filter(m => m.length > 0);
-    const mensagemFormatada = mensagens.join('\n');
+  mostrarErro(mensagens: string[]) {
+    const mensagemFormatada = mensagens.join('<br/>') || 'Erro desconhecido ao calcular o investimento.';
 
-    this.snackBar.open(mensagemFormatada, 'Fechar', {
-      duration: 15000,
-      horizontalPosition: 'right',
-      verticalPosition: 'top',
-      panelClass: ['error-snackbar']
+    this.toastr.error(mensagemFormatada, 'Não foi possível realizar o cálculo', {
+      timeOut: 12000,
+      closeButton: true,
+      progressBar: true,
+      positionClass: 'toast-top-right',
+      enableHtml: true 
     });
   }
 

@@ -2,6 +2,7 @@
 using B3.Cdb.Application.Requests;
 using B3.Cdb.Domain.Notifications;
 using System.Linq;
+using System.Net;
 using System.Web.Http;
 
 namespace B3.Cdb.Api.Controllers
@@ -27,8 +28,9 @@ namespace B3.Cdb.Api.Controllers
 
             if (_notifier.HasNotifications())
             {
-                var mensagens = string.Join(", ", _notifier.GetNotifications().Select(n => n.Message));
-                return BadRequest(mensagens);
+                var mensagens = _notifier.GetNotifications().Select(n => n.Message).ToArray();
+
+                return Content(HttpStatusCode.BadRequest, mensagens);
             }
 
             return Ok(resultado);

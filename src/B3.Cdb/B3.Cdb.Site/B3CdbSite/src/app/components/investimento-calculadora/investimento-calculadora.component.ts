@@ -1,6 +1,5 @@
 
 import { Component } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { InvestimentoService } from '../../services/investimento.service';
 import { CalculoInvestimentoRequest } from '../../models/CalculoInvestimentoRequest';
 import { CalculoInvestimentoResponse } from '../../models/CalculoInvestimentoResponse';
@@ -14,18 +13,17 @@ export class InvestimentoCalculadoraComponent {
   request: CalculoInvestimentoRequest = { ValorInicial: 0, PrazoMeses: 0 };
   response: CalculoInvestimentoResponse | null = null;
 
-  constructor(private investimentoService: InvestimentoService, private snackBar: MatSnackBar) { }
+  constructor(private investimentoService: InvestimentoService) { }
 
   calcular() {
     this.investimentoService.calcularInvestimento(this.request).subscribe(
       data => {
-        console.log('Dados recebidos:', data);
+        //console.log('Dados recebidos:', data);
         this.response = data;
       },
       error => {
-        console.log('Erro Log:', error.error);
-        const mensagemErro = error.error.Message || 'Erro desconhecido ao calcular o investimento.';
-        this.investimentoService.mostrarErro(mensagemErro);
+        //console.log('Erro Log:', error.error);
+        this.investimentoService.mostrarErro(error.error);
         this.response = null;
       }
     );
