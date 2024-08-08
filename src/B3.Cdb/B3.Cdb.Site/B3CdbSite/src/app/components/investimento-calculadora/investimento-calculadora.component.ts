@@ -1,15 +1,14 @@
+
 import { Component } from '@angular/core';
 import { InvestimentoService } from '../../services/investimento.service';
 import { CalculoInvestimentoRequest } from '../../models/CalculoInvestimentoRequest';
 import { CalculoInvestimentoResponse } from '../../models/CalculoInvestimentoResponse';
 
-
 @Component({
   selector: 'app-investimento-calculadora',
   templateUrl: './investimento-calculadora.component.html',
-  styleUrl: './investimento-calculadora.component.css'
+  styleUrls: ['./investimento-calculadora.component.css']
 })
-
 export class InvestimentoCalculadoraComponent {
   request: CalculoInvestimentoRequest = { valorInicial: 0, prazoMeses: 0 };
   response: CalculoInvestimentoResponse | null = null;
@@ -19,11 +18,11 @@ export class InvestimentoCalculadoraComponent {
 
   calcular() {
     this.investimentoService.calcularInvestimento(this.request).subscribe(
-      (data) => {
+      data => {
         this.response = data;
         this.error = null;
       },
-      (error) => {
+      error => {
         this.error = 'Erro ao calcular o investimento. Verifique os dados e tente novamente.';
         this.response = null;
       }

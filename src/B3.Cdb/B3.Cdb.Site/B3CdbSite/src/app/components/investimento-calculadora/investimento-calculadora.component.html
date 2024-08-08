@@ -1,27 +1,24 @@
 
-<div>
-    <h2>Calculadora de Investimento</h2>
-    <form (ngSubmit)="calcular()">
-      <div>
-        <label for="valorInicial">Valor Inicial:</label>
-        <input type="number" id="valorInicial" [(ngModel)]="request.valorInicial" name="valorInicial" required>
-      </div>
-      <div>
-        <label for="prazoMeses">Prazo em Meses:</label>
-        <input type="number" id="prazoMeses" [(ngModel)]="request.prazoMeses" name="prazoMeses" required>
-      </div>
-      <button type="submit">Calcular</button>
+<mat-card>
+  <mat-card-title class="card-title">Calculadora de Investimento</mat-card-title>
+  <mat-card-content>
+    <form (ngSubmit)="calcular()" class="form-layout">
+      <mat-form-field appearance="fill">
+        <mat-label>Valor Inicial</mat-label>
+        <input matInput [(ngModel)]="request.valorInicial" name="valorInicial" required type="number">
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Prazo (meses)</mat-label>
+        <input matInput [(ngModel)]="request.prazoMeses" name="prazoMeses" required type="number">
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="submit">Calcular</button>
     </form>
-  
-    <div *ngIf="response">
-      <h3>Resultado do Investimento</h3>
+  </mat-card-content>
+  <mat-card-actions *ngIf="response">
+    <div>
       <p>Valor Bruto: {{ response.valorBruto | currency }}</p>
       <p>Valor Líquido: {{ response.valorLiquido | currency }}</p>
-      <p>Horário do Cálculo: {{ response.horarioCalculo | date:'short' }}</p>
+      <p>Horário do Cálculo: {{ response.horarioCalculo | date:'medium' }}</p>
     </div>
-  
-    <div *ngIf="error" class="error">
-      {{ error }}
-    </div>
-  </div>
-  
+  </mat-card-actions>
+</mat-card>

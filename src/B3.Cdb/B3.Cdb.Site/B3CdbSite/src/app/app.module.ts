@@ -9,6 +9,9 @@ import { InvestimentoCalculadoraComponent } from './components/investimento-calc
 import { HomeComponent } from './pages/home/home.component';
 import { InvestimentoService } from './services/investimento.service';
 import { AppRoutingModule } from './app-routing.module';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MaterialModule } from './material/material.module';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -20,9 +23,11 @@ import { AppRoutingModule } from './app-routing.module';
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MaterialModule,
+    FlexLayoutModule
   ],
-  providers: [InvestimentoService],
+  providers: [InvestimentoService, provideAnimationsAsync()],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

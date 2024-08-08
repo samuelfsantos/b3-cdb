@@ -1,0 +1,14 @@
+.content-container {
+    margin: 20px;
+    padding: 20px;
+  }
+
+.content-container {
+    padding: 2vw;
+  }
+  
+  @media (max-width: 768px) {
+    .content-container {
+      padding: 10px; 
+    }
+  }
