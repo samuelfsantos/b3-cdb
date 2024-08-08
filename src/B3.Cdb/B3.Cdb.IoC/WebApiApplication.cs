@@ -42,7 +42,7 @@ namespace B3.Cdb.IoC
             container.Register<IInvestimentoValidator, InvestimentoValidator>();
             container.Register<ICalculadoraDeInvestimento, CalculadoraDeInvestimento>();
             container.Register<IInvestimentoApplication, InvestimentoApplication>();
-            container.Register<INotifier, Notifier>();
+            container.Register<INotifier, Notifier>(Lifestyle.Singleton);
             container.Verify();
 
             return container;
