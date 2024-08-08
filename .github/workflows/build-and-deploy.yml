@@ -1,0 +1,55 @@
+name: CI_CD_PRD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1
+
+    - name: Restore NuGet packages
+      run: nuget restore src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj
+
+    - name: Build solution
+      run: msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj /p:Configuration=Release
+
+    - name: Publish build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: B3CdbApi
+        path: src/B3.Cdb/B3.Cdb.Api/bin/Release/
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: B3CdbApi
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: b3-cdb-api
+        slot-name: production
+        package: ./src/B3.Cdb/B3.Cdb.Api/bin/Release/
+        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+
+
