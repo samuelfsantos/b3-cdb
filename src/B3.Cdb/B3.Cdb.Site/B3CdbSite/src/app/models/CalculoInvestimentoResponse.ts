@@ -1,7 +1,7 @@
 export interface CalculoInvestimentoResponse {
-    valorInicial: number;
-    prazoMeses: number;
-    valorBruto: number;
-    valorLiquido: number;
-    horarioCalculo: Date;
+    ValorInicial: number;
+    PrazoMeses: number;
+    ValorBruto: number;
+    ValorLiquido: number;
+    HorarioCalculo: Date;
   }

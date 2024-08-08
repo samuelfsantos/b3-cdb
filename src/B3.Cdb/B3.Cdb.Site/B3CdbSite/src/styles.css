@@ -1,4 +1,21 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+.error-snackbar {
+    white-space: pre-line !important;
+    color: #fff !important;
+    background-color: #D32F2F !important;
+}
+
+.mat-snack-bar-container.error-snackbar {
+    white-space: pre-line !important;
+    color: #fff !important;
+    background-color: #D32F2F !important;
+}
+
+::ng-deep .mat-snack-bar-container.error-snackbar {
+    white-space: pre-line !important;
+    color: #fff !important;
+    background-color: #D32F2F !important;
+}

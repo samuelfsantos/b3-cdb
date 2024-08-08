@@ -1,4 +1,4 @@
 export interface CalculoInvestimentoRequest {
-    valorInicial: number;
-    prazoMeses: number;
+    ValorInicial: number;
+    PrazoMeses: number;
   }

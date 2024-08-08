@@ -12,6 +12,9 @@ import { AppRoutingModule } from './app-routing.module';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MaterialModule } from './material/material.module';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatListModule } from '@angular/material/list';
+import { MatGridListModule } from '@angular/material/grid-list'; 
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,10 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     HttpClientModule,
     AppRoutingModule,
     MaterialModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MatListModule,
+    MatGridListModule,
+    MatSnackBarModule
   ],
   providers: [InvestimentoService, provideAnimationsAsync()],
   bootstrap: [AppComponent]
