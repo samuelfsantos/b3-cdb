@@ -1,11 +1,7 @@
 ﻿using B3.Cdb.Application.Interfaces;
 using B3.Cdb.Application.Requests;
 using B3.Cdb.Domain.Notifications;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace B3.Cdb.Api.Controllers
