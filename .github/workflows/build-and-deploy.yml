@@ -68,6 +68,9 @@ jobs:
       with:
         name: B3CdbApi
 
+    - name: List current directory
+      run: dir
+
     - name: List downloaded artifacts 2
       run: |
         if (Test-Path B3CdbApi) {
