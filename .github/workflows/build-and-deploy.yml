@@ -49,9 +49,9 @@ jobs:
         with:
           name: app
           
-      #- name: Deploy to App Service
-      #  uses: azure/webapps-deploy@v2
-      #  with: 
-      #    app-name: "b3-cdb-api"
-      #    publish-profile: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }}
-      #    package: ${{ github.workspace }}\app.zip
+      - name: Deploy to App Service
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: "b3-cdb-api"
+          publish-profile: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }}
+          package: ${{ github.workspace }}\app.zip
