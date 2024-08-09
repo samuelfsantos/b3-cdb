@@ -28,6 +28,9 @@ jobs:
       - name: Build
         run: msbuild B3.Cdb.sln /p:Configuration=Release /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:publishUrl=${{ github.workspace }}\publish /p:PrecompileBeforePublish=true /p:EnableUpdateable=false
      
+      - name: List Published Files
+        run: Get-ChildItem -Path ${{ github.workspace }}\publish -Recurse | Format-Table -Property FullName
+     
       - name: Zip
         run: compress-archive ${{ github.workspace }}\publish\* ${{ github.workspace }}\app.zip
 
