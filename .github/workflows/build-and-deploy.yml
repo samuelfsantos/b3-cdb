@@ -40,6 +40,11 @@ jobs:
     - name: List solution directory after build
       run: dir artifacts
       
+    - name: List workspace directories
+      run: |
+        echo "Listing all directories in the workspace:"
+        Get-ChildItem -Path ${{ github.workspace }} -Recurse -Directory
+
     - name: Verify MSBuild outputs
       run: |
         echo "Checking for MSBuild outputs..."
