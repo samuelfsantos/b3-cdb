@@ -29,7 +29,15 @@ jobs:
       run: New-Item -ItemType Directory -Force -Path artifacts
 
     - name: Build solution with detailed log
-      run: msbuild src/B3.Cdb/B3.Cdb.sln -property:Configuration=Release -property:Platform="Any CPU" -t:Publish -property:PublishDir=${{ github.workspace }}\artifacts\B3CdbApi
+      run: msbuild src/B3.Cdb/B3.Cdb.sln -property:Configuration=Release -property:Platform="Any CPU" -t:Publish -property:PublishDir=${{ github.workspace }}\artifacts\B3CdbApi /v:detailed
+
+    - name: Check MSBuild log for errors
+      run: |
+        if (Get-Content ${{ github.workspace }}\artifacts\B3CdbApi\*.log | Select-String -Pattern "error") {
+          echo "Errors found in MSBuild log."
+        } else {
+          echo "No errors in MSBuild log."
+        }
 
     - name: List solution directory after build
       run: dir artifacts
