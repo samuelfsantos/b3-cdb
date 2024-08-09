@@ -26,7 +26,7 @@ jobs:
       run: nuget restore src/B3.Cdb/B3.Cdb.sln
 
     - name: Build solution with detailed log
-      run: msbuild src/B3.Cdb/B3.Cdb.sln /p:Configuration=Release /p:Platform="AnyCPU" /p:DeployOnBuild=true /p:PublishProfile=FolderProfile /v:detailed
+      run: msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj /p:Configuration=Release /p:Platform="AnyCPU" /p:DeployOnBuild=true /p:PublishProfile=FolderProfile /v:detailed
 
     - name: List solution directory after build
       run: dir bin\Release
