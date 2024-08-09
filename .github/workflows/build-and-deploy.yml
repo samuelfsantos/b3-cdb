@@ -13,54 +13,72 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+    - name: Check out code
+      uses: actions/checkout@v2
 
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
 
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v1
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1
 
-      - name: Restore NuGet packages
-        run: nuget restore src/B3.Cdb/B3.Cdb.sln
+    - name: Restore NuGet packages
+      run: nuget restore src/B3.Cdb/B3.Cdb.sln
 
-      - name: Build and publish using publish profile
-        run: |
-          msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj /p:DeployOnBuild=true /p:PublishProfile=Properties\PublishProfiles\Azure.pubxml /p:Configuration=Release /p:Platform="AnyCPU" /p:WebPublishMethod=Package /p:PackageLocation="${{ github.workspace }}\publish" /v:detailed
+    - name: Build solution with detailed log
+      run: msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj /p:Configuration=Release /p:Platform="AnyCPU" /p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /v:detailed
 
-      - name: List published artifacts
-        run: dir ${{ github.workspace }}\publish
+    - name: List solution directory after build
+      run: dir src\B3.Cdb\B3.Cdb.Api\
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: B3CdbApi
-          path: ${{ github.workspace }}\publish
+    - name: List build output files
+      run: |
+        if (Test-Path src\B3.Cdb\B3.Cdb.Api\bin\Release\) {
+          dir src\B3.Cdb\B3.Cdb.Api\bin\Release\
+        } else {
+          echo "No build output found."
+        }
+
+    - name: Publish build artifacts
+      if: success()
+      uses: actions/upload-artifact@v2
+      with:
+        name: B3CdbApi
+        path: src/B3.Cdb/B3.Cdb.Api/bin/Release/**
+        retention-days: 1
 
   deploy:
     runs-on: windows-latest
     needs: build
 
     steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: B3CdbApi
-          path: ./downloaded_artifacts
+    - name: Check out code
+      uses: actions/checkout@v2
 
-      - name: List downloaded artifacts
-        run: |
-          if (Test-Path './downloaded_artifacts') {
-            Get-ChildItem -Path './downloaded_artifacts' -Recurse
-          } else {
-            echo "No downloaded artifacts found."
-          }
+    - name: Download build artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: B3CdbApi
+        path: ./downloaded_artifacts
 
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: b3-cdb-api
-          slot-name: production
-          package: ./downloaded_artifacts/B3.Cdb.Api.zip
-          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+    - name: List current directory
+      run: |
+        echo "Current Directory: $(Get-Location)"
+        dir
+
+    - name: List downloaded artifacts
+      run: |
+        if (Test-Path './downloaded_artifacts') {
+          Get-ChildItem -Path './downloaded_artifacts' -Recurse
+        } else {
+          echo "No downloaded artifacts found."
+        }
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: b3-cdb-api
+        slot-name: production
+        package: ./downloaded_artifacts
+        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+
