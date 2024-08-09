@@ -1,10 +1,14 @@
-name: CI_CD_PRD
+name: CI_CD_API
 
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - 'src/B3.Cdb/B3.Cdb.Site/**'
   pull_request:
     branches: [ "main" ]
+    paths-ignore:
+      - 'src/B3.Cdb/B3.Cdb.Site/**'
   workflow_dispatch:
 
 jobs:
