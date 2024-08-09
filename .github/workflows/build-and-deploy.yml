@@ -33,6 +33,17 @@ jobs:
 
     - name: List solution directory after build
       run: dir artifacts
+      
+    - name: Verify MSBuild outputs
+      run: |
+        echo "Checking for MSBuild outputs..."
+        if (Test-Path "${{ github.workspace }}\artifacts\B3CdbApi") {
+          echo "Build artifacts found."
+          dir ${{ github.workspace }}\artifacts\B3CdbApi
+        } else {
+          echo "No build output found. Listing all directories..."
+          Get-ChildItem -Path ${{ github.workspace }} -Recurse -Directory
+        }
 
     - name: List build output files
       run: |
