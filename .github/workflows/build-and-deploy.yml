@@ -31,11 +31,13 @@ jobs:
     - name: Build project with detailed log
       run: |
         msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj `
-          -p:Configuration=Release `
-          -p:Platform="Any CPU" `
-          -t:Publish `
-          -p:PublishProfile=FolderProfile `
-          -p:PublishDir=${{ github.workspace }}\artifacts\B3CdbApi `
+          /p:Configuration=Release `
+          /p:Platform="Any CPU" `
+          /t:Publish `
+          /p:PublishDir=${{ github.workspace }}\artifacts\B3CdbApi `
+          /p:WebPublishMethod=FileSystem `
+          /p:DeleteExistingFiles=True `
+          /p:OutDir=${{ github.workspace }}\artifacts\B3CdbApi `
           /verbosity:detailed
 
     - name: List solution directory after build
