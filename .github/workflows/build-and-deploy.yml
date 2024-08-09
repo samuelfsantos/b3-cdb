@@ -33,11 +33,11 @@ jobs:
         msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj `
           /p:Configuration=Release `
           /p:Platform="AnyCPU" `
-          /p:OutputPath="${{ github.workspace }}\artifacts\B3CdbApi" `
+          /p:OutputPath="D:\a\b3-cdb\b3-cdb\artifacts\B3CdbApi" `
           /p:WebPublishMethod=FileSystem `
           /p:DeleteExistingFiles=True `
-          /t:Restore;Build;Publish `
-          /p:PublishDir="${{ github.workspace }}\artifacts\B3CdbApi" `
+          /t:Publish `
+          /p:PublishDir="D:\a\b3-cdb\b3-cdb\artifacts\B3CdbApi" `
           /verbosity:detailed
 
     - name: List solution directory after build
