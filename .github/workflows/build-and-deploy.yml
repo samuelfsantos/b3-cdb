@@ -29,7 +29,7 @@ jobs:
       run: New-Item -ItemType Directory -Force -Path artifacts
 
     - name: Build solution with detailed log
-      run: msbuild src/B3.Cdb/B3.Cdb.sln -property:Configuration=Release -property:Platform="Any CPU" -t:Publish -property:PublishDir=$(System.DefaultWorkingDirectory)\artifacts\B3CdbApi
+      run: msbuild src/B3.Cdb/B3.Cdb.sln -property:Configuration=Release -property:Platform="Any CPU" -t:Publish -property:PublishDir=${{ github.workspace }}\artifacts\B3CdbApi
 
     - name: List solution directory after build
       run: dir artifacts
