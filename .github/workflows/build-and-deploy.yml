@@ -30,14 +30,13 @@ jobs:
 
     - name: Build project with detailed log
       run: |
-        msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj `
+        & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe" src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj `
           /p:Configuration=Release `
           /p:Platform="AnyCPU" `
-          /p:OutputPath="${{ github.workspace }}\artifacts\B3CdbApi" `
           /p:WebPublishMethod=FileSystem `
-          /p:DeleteExistingFiles=True `
-          /t:Build;Publish `
           /p:PublishDir="${{ github.workspace }}\artifacts\B3CdbApi" `
+          /p:DeployOnBuild=true `
+          /t:Build;Publish `
           /verbosity:detailed
 
     - name: List workspace directories and files
