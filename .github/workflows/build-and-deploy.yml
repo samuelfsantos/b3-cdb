@@ -44,7 +44,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: B3CdbApi
-        path: src/B3.Cdb/B3.Cdb.Api/bin/Release/**
+        path: src/B3.Cdb/B3.Cdb.Api/**
         retention-days: 1
 
   deploy:
