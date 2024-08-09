@@ -23,7 +23,7 @@ jobs:
       uses: NuGet/setup-nuget@v1
 
     - name: Restore NuGet packages
-      run: nuget restore src/B3.Cdb/B3.Cdb.sln
+      run: nuget restore src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj
 
     - name: Create artifacts directory
       run: New-Item -ItemType Directory -Force -Path artifacts
@@ -33,20 +33,16 @@ jobs:
         msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj `
           /p:Configuration=Release `
           /p:Platform="AnyCPU" `
-          /p:OutputPath="D:\a\b3-cdb\b3-cdb\artifacts\B3CdbApi" `
           /p:WebPublishMethod=FileSystem `
-          /p:DeleteExistingFiles=True `
-          /t:Publish `
-          /p:PublishDir="D:\a\b3-cdb\b3-cdb\artifacts\B3CdbApi" `
+          /p:PublishProfile=FolderProfile `
+          /p:PublishDir="${{ github.workspace }}\artifacts\B3CdbApi" `
+          /p:DeployOnBuild=true `
           /verbosity:detailed
 
-    - name: List solution directory after build
-      run: dir ${{ github.workspace }}\artifacts
-      
-    - name: List workspace directories
+    - name: List workspace directories and files
       run: |
-        echo "Listing all directories in the workspace:"
-        Get-ChildItem -Path ${{ github.workspace }} -Recurse -Directory
+        echo "Listing all directories and files in the workspace:"
+        Get-ChildItem -Path ${{ github.workspace }} -Recurse
 
     - name: Verify MSBuild outputs
       run: |
@@ -66,6 +62,7 @@ jobs:
         name: B3CdbApi
         path: artifacts/B3CdbApi/**
         retention-days: 1
+        if-no-files-found: warn
 
   deploy:
     runs-on: windows-latest
