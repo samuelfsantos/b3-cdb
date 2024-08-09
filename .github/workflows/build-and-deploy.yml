@@ -27,7 +27,7 @@ jobs:
 
       - name: Build and publish using publish profile
         run: |
-          msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj /p:DeployOnBuild=true /p:PublishProfile=Azure /p:Configuration=Release /p:Platform="AnyCPU" /p:WebPublishMethod=Package /p:PackageLocation="${{ github.workspace }}\publish" /v:detailed
+          msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj /p:DeployOnBuild=true /p:PublishProfile=Properties\PublishProfiles\Azure.pubxml /p:Configuration=Release /p:Platform="AnyCPU" /p:WebPublishMethod=Package /p:PackageLocation="${{ github.workspace }}\publish" /v:detailed
 
       - name: List published artifacts
         run: dir ${{ github.workspace }}\publish
