@@ -20,21 +20,21 @@ jobs:
       uses: microsoft/setup-msbuild@v1
 
     - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1
+      uses: NuGet/setup-nuget@v1.0.2
 
     - name: Restore NuGet packages
       run: nuget restore src/B3.Cdb/B3.Cdb.sln
 
     - name: Build solution with detailed log
-      run: msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj /p:Configuration=Release /p:Platform="AnyCPU" /p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /v:detailed
+      run: msbuild src/B3.Cdb/B3.Cdb.sln /p:Configuration=Release /p:Platform="AnyCPU" /p:DeployOnBuild=true /p:PublishProfile=FolderProfile /v:detailed
 
     - name: List solution directory after build
-      run: dir src\B3.Cdb\B3.Cdb.Api\
+      run: dir bin\Release
 
     - name: List build output files
       run: |
-        if (Test-Path src\B3.Cdb\B3.Cdb.Api\bin\Release\) {
-          dir src\B3.Cdb\B3.Cdb.Api\bin\Release\
+        if (Test-Path bin\Release\Publish) {
+          dir bin\Release\Publish\
         } else {
           echo "No build output found."
         }
@@ -44,7 +44,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: B3CdbApi
-        path: src/B3.Cdb/B3.Cdb.Api/**
+        path: bin/Release/Publish/**
         retention-days: 1
 
   deploy:
@@ -74,11 +74,11 @@ jobs:
           echo "No downloaded artifacts found."
         }
 
-    - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: b3-cdb-api
-        slot-name: production
-        package: ./downloaded_artifacts
-        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+    #- name: Deploy to Azure Web App
+    #  uses: azure/webapps-deploy@v2
+    #  with:
+    #    app-name: b3-cdb-api
+    #    slot-name: production
+    #    package: ./downloaded_artifacts
+    #    publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
 
