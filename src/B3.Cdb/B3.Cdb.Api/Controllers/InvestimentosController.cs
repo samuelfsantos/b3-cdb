@@ -35,5 +35,12 @@ namespace B3.Cdb.Api.Controllers
 
             return Ok(resultado);
         }
+
+        [HttpGet]
+        [Route("teste")]
+        public IHttpActionResult Teste()
+        {
+            return Ok("Api está funcionando!");
+        }
     }
 }
