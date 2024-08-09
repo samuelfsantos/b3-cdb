@@ -32,8 +32,9 @@ jobs:
       run: |
         msbuild src/B3.Cdb/B3.Cdb.Api/B3.Cdb.Api.csproj `
           -p:Configuration=Release `
-          -p:Platform="AnyCPU" `
+          -p:Platform="Any CPU" `
           -t:Publish `
+          -p:PublishProfile=FolderProfile `
           -p:PublishDir=${{ github.workspace }}\artifacts\B3CdbApi `
           /verbosity:detailed
 
@@ -54,14 +55,6 @@ jobs:
         } else {
           echo "No build output found. Listing all directories..."
           Get-ChildItem -Path ${{ github.workspace }} -Recurse -Directory
-        }
-
-    - name: List build output files
-      run: |
-        if (Test-Path artifacts\B3CdbApi) {
-          dir artifacts\B3CdbApi\
-        } else {
-          echo "No build output found."
         }
 
     - name: Publish build artifacts
