@@ -1,21 +1,10 @@
-
-FROM node:21.6.1 AS build
-
-WORKDIR /app
-
-COPY package*.json ./
-
-RUN npm install
-
-COPY . .
-
-RUN npm run build --prod
-
 FROM nginx:alpine
 
+# Remover arquivos padrão do Nginx
 RUN rm -rf /usr/share/nginx/html/*
 
-COPY --from=build /app/dist/b3-cdb-site /usr/share/nginx/html
+# Copiar o arquivo index.html para o diretório do Nginx
+COPY index.html /usr/share/nginx/html/index.html
 
 CMD ["nginx", "-g", "daemon off;"]
 
