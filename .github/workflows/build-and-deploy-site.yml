@@ -6,15 +6,11 @@ on:
     paths:
       - 'src/B3.Cdb/B3.Cdb.Site/**'
       - 'build-and-deploy-site.yml'
-    paths-ignore:
-      - 'build-and-deploy-api.yml'
   pull_request:
     branches: [ "main" ]
     paths:
       - 'src/B3.Cdb/B3.Cdb.Site/**'
       - 'build-and-deploy-site.yml'
-    paths-ignore:
-      - 'build-and-deploy-api.yml'
   workflow_dispatch:
 
 jobs:
