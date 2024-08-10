@@ -1,5 +1,5 @@
 
-FROM node:21.6.1 AS build
+FROM node:latest AS build
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build --prod
+RUN npm run build
 
 FROM nginx:alpine
 
