@@ -5,12 +5,12 @@ on:
     branches: [ "main" ]
     paths-ignore:
       - 'src/B3.Cdb/B3.Cdb.Site/**'
-      - 'build-and-deploy-site.yml'
+      - '.github/workflows/build-and-deploy-site.yml'
   pull_request:
     branches: [ "main" ]
     paths-ignore:
       - 'src/B3.Cdb/B3.Cdb.Site/**'
-      - 'build-and-deploy-site.yml'
+      - '.github/workflows/build-and-deploy-site.yml'
   workflow_dispatch:
 
 jobs:
