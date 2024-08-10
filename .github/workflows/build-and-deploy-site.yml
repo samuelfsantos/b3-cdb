@@ -40,7 +40,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t ${{ env.ACR_LOGIN_SERVER }}/b3-cdb-site:${{ env.TAG }} -f src/B3.Cdb/B3.Cdb.Site/B3CdbSite/Dockerfile src/B3.Cdb/B3.Cdb.Site/B3CdbSite
+          docker build -t ${{ env.ACR_LOGIN_SERVER }}/b3-cdb-site:${{ env.TAG }} -f src/B3.Cdb/B3.Cdb.Site/B3CdbSite/Dockerfile src/B3.Cdb/B3Cdb.Site/B3CdbSite
 
       - name: Push Docker Image
         run: |
@@ -50,12 +50,14 @@ jobs:
     needs: build_and_push
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+
       - name: Set TAG variable in Deploy
-        with:
-          envs:
-            GITHUB_SHA
         run: echo TAG=$(echo $GITHUB_SHA | head -c7) >> $GITHUB_ENV
     
+      - name: Verify TAG variable in Deploy
+        run: echo ${{ env.TAG }}
+
       - name: Azure Web App Deploy
         uses: azure/webapps-deploy@v2
         with:
