@@ -18,13 +18,18 @@ env:
   ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
   ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
   AZURE_PUBLISH_PROFILE_SITE: ${{ secrets.AZURE_PUBLISH_PROFILE_SITE }}
-  TAG: $(echo $GITHUB_SHA | head -c7)" >> $GITHUB_ENV
 
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
+    outputs:
+      image-tag: ${{ steps.set_tag.outputs.tag }}
     steps:
       - uses: actions/checkout@v3
+
+      - name: Set TAG variable
+        id: set_tag
+        run: echo "tag=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
       - name: Verify TAG variable in Build
         run: echo ${{ env.TAG }}
@@ -49,11 +54,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Verify TAG variable in Deploy
-        run: echo ${{ env.TAG }}
+        run: echo ${{ needs.build_and_push.outputs.image-tag }}
     
       - name: Azure Web App Deploy
         uses: azure/webapps-deploy@v2
         with:
           app-name: "b3-cdb-site"
           publish-profile: ${{ env.AZURE_PUBLISH_PROFILE_SITE }}
-          images: '${{ env.ACR_LOGIN_SERVER }}/b3-cdb-site:${{ env.TAG }}'
+          images: '${{ env.ACR_LOGIN_SERVER }}/b3-cdb-site:${{ needs.build_and_push.outputs.image-tag }}'
