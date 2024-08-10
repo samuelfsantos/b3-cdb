@@ -33,13 +33,13 @@ jobs:
         env:
           TAG: ${{ env.TAG }}
         run: |
-          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/b3-cdb-site:${{ env.TAG }} -f src/B3.Cdb/B3.Cdb.Site/B3CdbSite/Dockerfile src/B3.Cdb/B3.Cdb.Site/B3CdbSite
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/b3-cdb-site:$TAG -f src/B3.Cdb/B3.Cdb.Site/B3CdbSite/Dockerfile src/B3.Cdb/B3.Cdb.Site/B3CdbSite
 
       - name: Push Docker Image
         env:
           TAG: ${{ env.TAG }}
         run: |
-          docker push ${{ secrets.ACR_LOGIN_SERVER }}/b3-cdb-site:${{ env.TAG }}
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/b3-cdb-site:$TAG
 
   deploy:
     needs: build_and_push
@@ -48,7 +48,7 @@ jobs:
       - name: Verify TAG variable in Deploy
         env:
           TAG: ${{ env.TAG }}
-        run: echo ${{ env.TAG }}
+        run: echo $TAG
     
       - name: Azure Web App Deploy
         env:
@@ -57,5 +57,5 @@ jobs:
         with:
           app-name: "b3-cdb-site"
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_SITE }}
-          images: '${{ secrets.ACR_LOGIN_SERVER }}/b3-cdb-site:${{ env.TAG }}'
+          images: '${{ secrets.ACR_LOGIN_SERVER }}/b3-cdb-site:$TAG'
 
