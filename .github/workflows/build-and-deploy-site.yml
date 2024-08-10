@@ -41,6 +41,9 @@ jobs:
     needs: build_and_push
     runs-on: ubuntu-latest
     steps:
+      - name: Verify TAG variable in Deploy
+        run: echo "Deploying with TAG: ${{ env.TAG }}"
+    
       - name: Azure Web App Deploy
         uses: azure/webapps-deploy@v2
         with:
