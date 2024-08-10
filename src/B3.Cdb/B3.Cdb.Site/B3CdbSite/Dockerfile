@@ -23,7 +23,7 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copie os arquivos de build do Angular para o diretório do Nginx
-COPY --from=build /app/dist/B3CdbSite /usr/share/nginx/html
+COPY --from=build /app/dist/b3-cdb-site /usr/share/nginx/html
 
 # Exponha a porta 80
 EXPOSE 80
