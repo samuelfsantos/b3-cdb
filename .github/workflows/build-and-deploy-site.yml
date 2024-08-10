@@ -18,6 +18,7 @@ env:
   ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
   ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
   AZURE_PUBLISH_PROFILE_SITE: ${{ secrets.AZURE_PUBLISH_PROFILE_SITE }}
+  TAG: $(echo $GITHUB_SHA | head -c7)" >> $GITHUB_ENV
 
 jobs:
   build_and_push:
@@ -25,12 +26,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set TAG environment variable
-        id: set_tag
-        run: echo "TAG=$(echo $GITHUB_SHA | head -c7)" >> $GITHUB_ENV
-
       - name: Verify TAG variable in Build
-        run: echo $TAG
+        run: echo ${{ env.TAG }}
 
       - name: Log in to Azure Container Registry
         uses: azure/docker-login@v1
@@ -41,22 +38,22 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t ${{ env.ACR_LOGIN_SERVER }}/b3-cdb-site:$TAG -f src/B3.Cdb/B3.Cdb.Site/B3CdbSite/Dockerfile src/B3.Cdb/B3.Cdb.Site/B3CdbSite
+          docker build -t ${{ env.ACR_LOGIN_SERVER }}/b3-cdb-site:${{ env.TAG }} -f src/B3.Cdb/B3.Cdb.Site/B3CdbSite/Dockerfile src/B3.Cdb/B3.Cdb.Site/B3CdbSite
 
       - name: Push Docker Image
         run: |
-          docker push ${{ env.ACR_LOGIN_SERVER }}/b3-cdb-site:$TAG
+          docker push ${{ env.ACR_LOGIN_SERVER }}/b3-cdb-site:${{ env.TAG }}
 
   deploy:
     needs: build_and_push
     runs-on: ubuntu-latest
     steps:
       - name: Verify TAG variable in Deploy
-        run: echo $TAG
+        run: echo ${{ env.TAG }}
     
       - name: Azure Web App Deploy
         uses: azure/webapps-deploy@v2
         with:
           app-name: "b3-cdb-site"
           publish-profile: ${{ env.AZURE_PUBLISH_PROFILE_SITE }}
-          images: '${{ env.ACR_LOGIN_SERVER }}/b3-cdb-site:$TAG'
+          images: '${{ env.ACR_LOGIN_SERVER }}/b3-cdb-site:${{ env.TAG }}'
