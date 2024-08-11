@@ -67,6 +67,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
+      - name: Setup NuGet
+        uses: nuget/setup-nuget@v1
+
+      - name: Restore NuGet packages
+        run: nuget restore B3.Cdb.sln
+      
       - name: SonarQube Scan
         env:
           SONAR_HOST_URL: "http://104.248.228.214:9000/"
