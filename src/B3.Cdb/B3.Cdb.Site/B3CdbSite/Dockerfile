@@ -1,14 +1,21 @@
-FROM node:latest as build-stage
+
+FROM node:latest AS build
+
 WORKDIR /app
+
 COPY package*.json ./
+
 RUN npm install
-COPY ./ .
+
+COPY . .
+
 RUN npm run build --production
 
-FROM nginx as production-stage
-RUN mkdir /app
-COPY --from=build-stage /app/dist /app
-COPY nginx.conf /etc/nginx/nginx.conf
+FROM nginx:alpine
+
+RUN rm -rf /usr/share/nginx/html/*
+
+COPY --from=build /app/dist/b3-cdb-site /usr/share/nginx/html
 
 CMD ["nginx", "-g", "daemon off;"]
 
