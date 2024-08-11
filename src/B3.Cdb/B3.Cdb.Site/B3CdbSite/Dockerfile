@@ -15,7 +15,7 @@ FROM nginx:alpine
 
 RUN rm -rf /usr/share/nginx/html/*
 
-COPY --from=build /app/dist/b3-cdb-site /usr/share/nginx/html
+COPY --from=build /app/dist/b3-cdb-site/browser /usr/share/nginx/html
 
 CMD ["nginx", "-g", "daemon off;"]
 

@@ -42,9 +42,9 @@ jobs:
         run: |
           docker build -t ${{ env.ACR_LOGIN_SERVER }}/b3-cdb-site:${{ env.TAG }} -f src/B3.Cdb/B3.Cdb.Site/B3CdbSite/Dockerfile src/B3.Cdb/B3.Cdb.Site/B3CdbSite
 
-      - name: Verify Build Output
+      - name: Verify Files in Docker Image
         run: |
-          ls -la dist/b3-cdb-site
+          docker run --rm ${{ env.ACR_LOGIN_SERVER }}/b3-cdb-site:${{ env.TAG }} ls -la /usr/share/nginx/html
 
 
       - name: Push Docker Image
