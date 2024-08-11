@@ -43,7 +43,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: test-results
-          path: .\B3.Cdb.Test\TestResults\
+          path: .\src\B3.Cdb\B3.Cdb.Test\TestResults\**\*.trx
+          if-no-files-found: warn
 
       - name: List Published Files
         run: Get-ChildItem -Path ${{ github.workspace }}\publish -Recurse | Format-Table -Property FullName
