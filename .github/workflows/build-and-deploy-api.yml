@@ -35,7 +35,7 @@ jobs:
         run: msbuild B3.Cdb.sln /p:Configuration=Release /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:publishUrl=${{ github.workspace }}\publish /p:PrecompileBeforePublish=true /p:EnableUpdateable=false
       
       - name: Test
-        run: dotnet test .\B3.Cdb.Test\B3.Cdb.Test.csproj --configuration Release --logger "trx;LogFileName=test-results.trx"
+        run: dotnet test .\B3.Cdb.Test\B3.Cdb.Test.csproj --configuration Release --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage"
         continue-on-error: false
 
       - name: Publish Test Results
@@ -45,6 +45,13 @@ jobs:
           name: test-results
           path: .\src\B3.Cdb\B3.Cdb.Test\TestResults\**\*.trx
           if-no-files-found: warn
+
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+      - name: Convert coverage report to XML
+        run: |
+          reportgenerator "-reports:./**/coverage.cobertura.xml" "-targetdir:./CoverageReport" "-reporttypes:Cobertura"
 
       - name: List Published Files
         run: Get-ChildItem -Path ${{ github.workspace }}\publish -Recurse | Format-Table -Property FullName
@@ -85,7 +92,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
         run: |
           dotnet tool install --global dotnet-sonarscanner
-          dotnet-sonarscanner begin /k:"b3-cdb-api" /d:sonar.host.url="${{ env.SONAR_HOST_URL }}" /d:sonar.login="${{ secrets.SONARQUBE_TOKEN }}"
+          dotnet-sonarscanner begin /k:"b3-cdb-api" /d:sonar.host.url="${{ env.SONAR_HOST_URL }}" /d:sonar.login="${{ secrets.SONARQUBE_TOKEN }}" /d:sonar.cs.vstest.reportsPaths="./**/TestResults/test-results.trx" /d:sonar.cs.opencover.reportsPaths="./CoverageReport/Cobertura.xml"
           msbuild B3.Cdb.sln
           dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARQUBE_TOKEN }}"
 
