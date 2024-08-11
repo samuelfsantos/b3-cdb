@@ -54,18 +54,21 @@ jobs:
 
       - name: Check Coverage File
         run: |
-          $coverageFile = Get-ChildItem -Path ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\ -Recurse -Filter 'coverage.cobertura.xml'
-          if ($coverageFile) {
-            Write-Host "Coverage file found: $($coverageFile.FullName)"
+          $coverageFiles = Get-ChildItem -Path ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\ -Recurse -Filter 'coverage.cobertura.xml'
+          if ($coverageFiles.Count -gt 0) {
+            Write-Host "Coverage files found:"
+            $coverageFiles | ForEach-Object { Write-Host $_.FullName }
           } else {
-            Write-Host "Coverage file not found."
+            Write-Host "No coverage files found."
           }
 
       - name: Convert coverage report to XML
         run: |
-          $coverageFile = Get-ChildItem -Path ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\ -Recurse -Filter 'coverage.cobertura.xml'
-          if ($coverageFile) {
-            reportgenerator "-reports:$($coverageFile.FullName)" "-targetdir:${{ github.workspace }}\CoverageReport" "-reporttypes:Cobertura"
+          $coverageFiles = Get-ChildItem -Path ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\ -Recurse -Filter 'coverage.cobertura.xml'
+          if ($coverageFiles.Count -gt 0) {
+            $coverageFiles | ForEach-Object {
+              reportgenerator "-reports:$($_.FullName)" "-targetdir:${{ github.workspace }}\CoverageReport" "-reporttypes:Cobertura"
+            }
           } else {
             Write-Error "Coverage file not found."
           }
