@@ -70,7 +70,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
         run: |
           dotnet tool install --global dotnet-sonarscanner
-          dotnet sonarscanner begin /k:"b3-cdb-api" /d:sonar.login="${{ secrets.SONARQUBE_TOKEN }}"
+          dotnet-sonarscanner begin /k:"b3-cdb-api" /d:sonar.host.url="${{ env.SONAR_HOST_URL }}" /d:sonar.login="${{ secrets.SONARQUBE_TOKEN }}"
           msbuild B3.Cdb.sln
           dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARQUBE_TOKEN }}"
 
