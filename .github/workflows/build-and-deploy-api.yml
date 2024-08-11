@@ -51,7 +51,7 @@ jobs:
 
       - name: Convert coverage report to XML
         run: |
-          reportgenerator "-reports:$(System.DefaultWorkingDirectory)\src\B3.Cdb\B3.Cdb.Test\TestResults\*\coverage.cobertura.xml" "-targetdir:$(System.DefaultWorkingDirectory)\CoverageReport" "-reporttypes:Cobertura"
+          reportgenerator "-reports:${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\*\coverage.cobertura.xml" "-targetdir:${{ github.workspace }}\CoverageReport" "-reporttypes:Cobertura"
 
       - name: List Published Files
         run: Get-ChildItem -Path ${{ github.workspace }}\publish -Recurse | Format-Table -Property FullName
