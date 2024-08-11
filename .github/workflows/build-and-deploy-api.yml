@@ -53,11 +53,22 @@ jobs:
         run: Get-ChildItem -Path ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\ -Recurse
 
       - name: Check Coverage File
-        run: Get-ChildItem -Path ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\**\coverage.cobertura.xml
+        run: |
+          $coverageFile = Get-ChildItem -Path ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\ -Recurse -Filter 'coverage.cobertura.xml'
+          if ($coverageFile) {
+            Write-Host "Coverage file found: $($coverageFile.FullName)"
+          } else {
+            Write-Host "Coverage file not found."
+          }
 
       - name: Convert coverage report to XML
         run: |
-          reportgenerator "-reports:${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\**\coverage.cobertura.xml" "-targetdir:${{ github.workspace }}\CoverageReport" "-reporttypes:Cobertura"
+          $coverageFile = Get-ChildItem -Path ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\ -Recurse -Filter 'coverage.cobertura.xml'
+          if ($coverageFile) {
+            reportgenerator "-reports:$($coverageFile.FullName)" "-targetdir:${{ github.workspace }}\CoverageReport" "-reporttypes:Cobertura"
+          } else {
+            Write-Error "Coverage file not found."
+          }
 
       - name: List Published Files
         run: Get-ChildItem -Path ${{ github.workspace }}\publish -Recurse | Format-Table -Property FullName
