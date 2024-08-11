@@ -53,11 +53,11 @@ jobs:
         run: Get-ChildItem -Path ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\ -Recurse
 
       - name: Check Coverage File
-        run: Get-ChildItem -Path ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\*\coverage.cobertura.xml
+        run: Get-ChildItem -Path ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\**\coverage.cobertura.xml
 
       - name: Convert coverage report to XML
         run: |
-          reportgenerator "-reports:${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\*\coverage.cobertura.xml" "-targetdir:${{ github.workspace }}\CoverageReport" "-reporttypes:Cobertura"
+          reportgenerator "-reports:${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\**\coverage.cobertura.xml" "-targetdir:${{ github.workspace }}\CoverageReport" "-reporttypes:Cobertura"
 
       - name: List Published Files
         run: Get-ChildItem -Path ${{ github.workspace }}\publish -Recurse | Format-Table -Property FullName
