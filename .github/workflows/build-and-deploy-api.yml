@@ -85,7 +85,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
-          path: ${{ github.workspace }}\CoverageReport\
+          path: ${{ github.workspace }}\CoverageReport\**
 
       - name: Wait for Test Results
         run: |
@@ -113,7 +113,7 @@ jobs:
       - name: Zip
         run: compress-archive ${{ github.workspace }}\publish\* ${{ github.workspace }}\app.zip
 
-      - name: Upload Artifact
+      - name: Upload App Artifact
         uses: actions/upload-artifact@v3
         with:
           name: app
@@ -135,7 +135,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: coverage-report
-          path: ./CoverageReport/
+          path: ./CoverageReport
 
       - name: List Files in Coverage Report After Download
         run: |
@@ -179,7 +179,9 @@ jobs:
     needs: [build, sonarcloud]
     runs-on: windows-latest
     steps:
-      - name: Download app
+      - uses: actions/checkout@v3
+
+      - name: Download App Artifact
         uses: actions/download-artifact@v3
         with:
           name: app
