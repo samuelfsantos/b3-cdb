@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: test-results
-          path: .\B3.Cdb.Test\TestResults\*.trx
+          path: .\B3.Cdb.Test\TestResults\TestResults\*.trx
           if-no-files-found: warn
 
       - name: Install ReportGenerator
