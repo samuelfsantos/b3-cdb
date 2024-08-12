@@ -115,6 +115,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Create CoverageReport Directory
+        run: mkdir -p ./CoverageReport
+
       - name: Download Coverage Report
         uses: actions/download-artifact@v3
         with:
