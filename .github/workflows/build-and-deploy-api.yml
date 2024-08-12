@@ -36,7 +36,7 @@ jobs:
       
       - name: Test
         run: |
-          dotnet test .\B3.Cdb.Test\B3.Cdb.Test.csproj --configuration Release --logger "trx;LogFileName=test-results.trx" --collect:"Code Coverage"
+          dotnet test .\B3.Cdb.Test\B3.Cdb.Test.csproj --configuration Release --logger "trx;LogFileName=test-results.trx" --collect:"Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=TestResults\coverage.cobertura.xml
         continue-on-error: false
 
       - name: Publish Test Results
