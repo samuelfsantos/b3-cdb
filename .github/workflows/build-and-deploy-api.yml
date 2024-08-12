@@ -68,6 +68,14 @@ jobs:
             Write-Error "Coverage file not found: ${{ env.COVERAGE_FILE }}"
           }
 
+      - name: Verify Coverage Report Generation
+        run: |
+          if (Test-Path "${{ github.workspace }}\CoverageReport\Cobertura.xml") {
+            Write-Host "Coverage report successfully generated."
+          } else {
+            Write-Error "Coverage report not found after generation."
+          }
+
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v3
         with:
