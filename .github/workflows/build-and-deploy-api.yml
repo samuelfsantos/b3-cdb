@@ -53,18 +53,6 @@ jobs:
       - name: Debug Coverage Files
         run: Get-ChildItem -Path ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\ -Recurse
 
-      - name: Locate Coverage File
-        id: coverage-locator
-        run: |
-          $coverageFiles = Get-ChildItem -Path ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\ -Recurse -Filter 'coverage.cobertura.xml' -ErrorAction SilentlyContinue
-          if ($coverageFiles) {
-            $coverageFiles | ForEach-Object { Write-Host "Found coverage file: $($_.FullName)" }
-            echo "coverage_file=$($coverageFiles[0].FullName)" >> $env:GITHUB_ENV
-          } else {
-            Write-Host "No coverage files found."
-            exit 1
-          }
-
       - name: Convert Coverage Report to XML
         run: |
           reportgenerator "-reports:${{ env.coverage_file }}" "-targetdir:${{ github.workspace }}\CoverageReport" "-reporttypes:Cobertura"
