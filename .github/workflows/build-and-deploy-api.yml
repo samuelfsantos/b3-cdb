@@ -31,6 +31,9 @@ jobs:
       - name: Restore NuGet packages
         run: nuget restore B3.Cdb.sln
 
+      - name: Install Coverlet MSBuild
+        run: nuget install coverlet.msbuild -Version 3.1.2 -OutputDirectory .
+
       - name: Build
         run: msbuild B3.Cdb.sln /p:Configuration=Release /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:publishUrl=${{ github.workspace }}\publish /p:PrecompileBeforePublish=true /p:EnableUpdateable=false
 
@@ -45,9 +48,7 @@ jobs:
 
       - name: Test with Coverlet
         run: |
-          dotnet tool install --global coverlet.console
-          $env:Path += ";C:\Users\runneradmin\.dotnet\tools"
-          coverlet .\B3.Cdb.Test\bin\Release\B3.Cdb.Test.dll --target "dotnet" --targetargs "test .\B3.Cdb.Test\B3.Cdb.Test.csproj --no-build --configuration Release --logger trx /ResultsDirectory:.\B3.Cdb.Test\TestResults" --output ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\coverage.cobertura.xml --format cobertura
+          msbuild B3.Cdb.Test/B3.Cdb.Test.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\coverage.cobertura.xml /p:Configuration=Release /t:VSTest
 
       - name: List Test Results Directory
         run: Get-ChildItem -Path ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\ -Recurse | Format-Table -Property FullName
