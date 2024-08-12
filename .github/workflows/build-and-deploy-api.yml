@@ -36,11 +36,20 @@ jobs:
       
       - name: Test
         run: |
-          dotnet test .\B3.Cdb.Test\B3.Cdb.Test.csproj --configuration Release --logger "trx;LogFileName=TestResults/test-results.trx" --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=.\B3.Cdb.Test\TestResults\coverage.
+          dotnet test .\B3.Cdb.Test\B3.Cdb.Test.csproj --configuration Release --logger "trx;LogFileName=TestResults/test-results.trx" --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=.\B3.Cdb.Test\TestResults\coverage.cobertura.xml
         continue-on-error: false
 
       - name: List Test Results and Coverage Files
         run: Get-ChildItem -Path .\B3.Cdb.Test\TestResults\ -Recurse
+
+      - name: Debug Coverage Files
+        run: |
+          Get-ChildItem -Path .\B3.Cdb.Test\TestResults\ -Recurse
+          if (Test-Path .\B3.Cdb.Test\TestResults\coverage.cobertura.xml) {
+            Write-Host "Coverage file exists."
+          } else {
+            Write-Error "Coverage file not found."
+          }
 
       - name: Convert Coverage Report to XML
         env:
