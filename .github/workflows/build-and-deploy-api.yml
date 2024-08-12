@@ -43,10 +43,14 @@ jobs:
       - name: List Test Results and Coverage Files
         run: Get-ChildItem -Path .\B3.Cdb.Test\TestResults\ -Recurse
 
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
       - name: Convert Coverage Report to XML
         env:
           COVERAGE_FILE: ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\coverage.cobertura.xml
         run: |
+          $env:Path += ";C:\Users\runneradmin\.dotnet\tools"
           if (Test-Path "${{ env.COVERAGE_FILE }}") {
             reportgenerator "-reports:${{ env.COVERAGE_FILE }}" "-targetdir:${{ github.workspace }}\CoverageReport" "-reporttypes:Cobertura"
           } else {
@@ -60,9 +64,6 @@ jobs:
           name: test-results
           path: .\B3.Cdb.Test\TestResults\TestResults\*.trx
           if-no-files-found: warn
-
-      - name: Install ReportGenerator
-        run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
       - name: List Published Files
         run: Get-ChildItem -Path ${{ github.workspace }}\publish -Recurse | Format-Table -Property FullName
