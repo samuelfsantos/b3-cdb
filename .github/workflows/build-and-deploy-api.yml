@@ -64,7 +64,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
         run: |
           dotnet tool install --global dotnet-sonarscanner
-          export PATH="$PATH:~/.dotnet/tools"
           dotnet-sonarscanner begin /k:"b3-cdb-api" /d:sonar.host.url="${{ env.SONAR_HOST_URL }}" /d:sonar.login="${{ secrets.SONARQUBE_TOKEN }}" /d:sonar.cs.vstest.reportsPaths="${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\test-results.trx" /d:sonar.cs.opencover.reportsPaths="${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\coverage.cobertura.xml"
           msbuild B3.Cdb.sln
           dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARQUBE_TOKEN }}"
