@@ -34,82 +34,6 @@ jobs:
       - name: Build
         run: msbuild B3.Cdb.sln /p:Configuration=Release /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:publishUrl=${{ github.workspace }}\publish /p:PrecompileBeforePublish=true /p:EnableUpdateable=false
 
-      - name: Test with Coverlet
-        run: |
-          dotnet tool install --global coverlet.console
-          $env:Path += ";C:\Users\runneradmin\.dotnet\tools"
-          coverlet .\B3.Cdb.Test\bin\Release\B3.Cdb.Test.dll --target "dotnet" --targetargs "test .\B3.Cdb.Test\B3.Cdb.Test.csproj --no-build --configuration Release --logger trx;LogFileName=${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\test-results.trx" --output .\B3.Cdb.Test\TestResults\coverage.cobertura.xml --format cobertura
-
-      - name: List Test Results Directory
-        run: Get-ChildItem -Path .\B3.Cdb.Test\TestResults\ -Recurse | Format-Table -Property FullName
-
-      - name: Verify Coverage File
-        run: |
-          if (Test-Path .\B3.Cdb.Test\TestResults\coverage.cobertura.xml) {
-            Write-Host "Coverage file exists."
-          } else {
-            Write-Error "Coverage file not found."
-          }
-
-      - name: Install ReportGenerator
-        run: dotnet tool install --global dotnet-reportgenerator-globaltool
-
-      - name: Convert Coverage Report to XML
-        env:
-          COVERAGE_FILE: ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\coverage.cobertura.xml
-        run: |
-          $env:Path += ";C:\Users\runneradmin\.dotnet\tools"
-          if (Test-Path "${{ env.COVERAGE_FILE }}") {
-            Write-Host "Generating coverage report..."
-            reportgenerator "-reports:${{ env.COVERAGE_FILE }}" "-targetdir:${{ github.workspace }}\CoverageReport" "-reporttypes:Cobertura"
-            Write-Host "Coverage report generated."
-            Get-ChildItem -Path "${{ github.workspace }}\CoverageReport" -Recurse | Format-Table -Property FullName
-          } else {
-            Write-Error "Coverage file not found: ${{ env.COVERAGE_FILE }}"
-          }
-
-      - name: Verify Coverage Report Generation
-        run: |
-          if (Test-Path "${{ github.workspace }}\CoverageReport\Cobertura.xml") {
-            Write-Host "Coverage report successfully generated."
-          } else {
-            Write-Error "Coverage report not found after generation."
-          }
-
-      - name: List Coverage Directory Before Upload
-        run: |
-          Write-Host "Listing coverage files before upload:"
-          Get-ChildItem -Path "${{ github.workspace }}\CoverageReport" -Recurse | Format-Table -Property FullName
-
-      - name: Upload Coverage Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report
-          path: ${{ github.workspace }}\CoverageReport\**\*
-
-      - name: Wait for Test Results
-        run: |
-          $filePath = "${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\test-results.trx"
-          $attempts = 10
-          while (-Not (Test-Path $filePath) -and $attempts -gt 0) {
-            Start-Sleep -Seconds 5
-            $attempts--
-          }
-          if (-Not (Test-Path $filePath)) {
-            Write-Error "Test results file not found: $filePath"
-          }
-
-      - name: Publish Test Results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\test-results.trx
-          if-no-files-found: warn
-
-      - name: List Published Files
-        run: Get-ChildItem -Path ${{ github.workspace }}\publish -Recurse | Format-Table -Property FullName
-
       - name: Zip
         run: compress-archive ${{ github.workspace }}\publish\* ${{ github.workspace }}\app.zip
 
@@ -119,50 +43,20 @@ jobs:
           name: app
           path: ${{ github.workspace }}\app.zip
 
-  sonarcloud:
-    runs-on: ubuntu-latest
-    needs: build
-    defaults:
-      run:
-        working-directory: ./src/B3.Cdb
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Create CoverageReport Directory
-        run: mkdir -p ./CoverageReport
-
-      - name: Download Coverage Report
-        uses: actions/download-artifact@v3
-        with:
-          name: coverage-report
-          path: ./CoverageReport
-
-      - name: List Files in Coverage Report After Download
+      - name: Test with Coverlet
         run: |
-          echo "Checking CoverageReport directory contents after download..."
-          ls -la ./CoverageReport/
+          dotnet tool install --global coverlet.console
+          $env:Path += ";C:\Users\runneradmin\.dotnet\tools"
+          coverlet .\B3.Cdb.Test\bin\Release\B3.Cdb.Test.dll --target "dotnet" --targetargs "test .\B3.Cdb.Test\B3.Cdb.Test.csproj --no-build --configuration Release --logger trx;LogFileName=${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\test-results.trx" --output .\B3.Cdb.Test\TestResults\coverage.cobertura.xml --format cobertura
+
+      - name: List Test Results Directory
+        run: Get-ChildItem -Path .\B3.Cdb.Test\TestResults\ -Recurse | Format-Table -Property FullName
 
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
-
-      - name: Setup NuGet
-        uses: nuget/setup-nuget@v1
-
-      - name: Restore NuGet packages
-        run: nuget restore B3.Cdb.sln
-
-      - name: Check Coverage Report
-        run: |
-          if [ -f ./CoverageReport/Cobertura.xml ]; then
-            echo "Coverage report found."
-            cat ./CoverageReport/Cobertura.xml
-          else
-            echo "Coverage report not found."
-            ls -la ./CoverageReport/
-          fi
 
       - name: SonarQube Scan
         env:
@@ -171,12 +65,12 @@ jobs:
         run: |
           dotnet tool install --global dotnet-sonarscanner
           export PATH="$PATH:~/.dotnet/tools"
-          dotnet-sonarscanner begin /k:"b3-cdb-api" /d:sonar.host.url="${{ env.SONAR_HOST_URL }}" /d:sonar.login="${{ secrets.SONARQUBE_TOKEN }}" /d:sonar.cs.vstest.reportsPaths="./**/TestResults/test-results.trx" /d:sonar.cs.opencover.reportsPaths="./CoverageReport/Cobertura.xml"
+          dotnet-sonarscanner begin /k:"b3-cdb-api" /d:sonar.host.url="${{ env.SONAR_HOST_URL }}" /d:sonar.login="${{ secrets.SONARQUBE_TOKEN }}" /d:sonar.cs.vstest.reportsPaths="${{ github.workspace }}\CoverageReport\test-results.trx" /d:sonar.cs.opencover.reportsPaths="${{ github.workspace }}\CoverageReport\Cobertura.xml"
           msbuild B3.Cdb.sln
           dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARQUBE_TOKEN }}"
 
   deploy:
-    needs: [build, sonarcloud]
+    needs: [build]
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
