@@ -155,6 +155,7 @@ jobs:
             cat ./CoverageReport/Cobertura.xml
           else
             echo "Coverage report not found."
+            ls -la ./CoverageReport/
           fi
 
       - name: SonarQube Scan
