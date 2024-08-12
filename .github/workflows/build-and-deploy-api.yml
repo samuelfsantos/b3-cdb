@@ -85,7 +85,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
-          path: ${{ github.workspace }}\CoverageReport\Cobertura.xml
+          path: ${{ github.workspace }}\CoverageReport\
 
       - name: Wait for Test Results
         run: |
@@ -137,9 +137,9 @@ jobs:
           name: coverage-report
           path: ./CoverageReport/
 
-      - name: List Files in Coverage Report
+      - name: List Files in Coverage Report After Download
         run: |
-          echo "Checking CoverageReport directory contents..."
+          echo "Checking CoverageReport directory contents after download..."
           ls -la ./CoverageReport/
 
       - name: Setup Java
