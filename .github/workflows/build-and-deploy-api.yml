@@ -80,7 +80,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
-          path: ${{ github.workspace }}\CoverageReport\Cobertura.xml
+          path: ${{ github.workspace }}\CoverageReport\
 
       - name: Wait for Test Results
         run: |
@@ -152,6 +152,7 @@ jobs:
       - name: Check Coverage Report
         run: |
           if [ -f ./CoverageReport/Cobertura.xml ]; then
+            echo "Coverage report found."
             cat ./CoverageReport/Cobertura.xml
           else
             echo "Coverage report not found."
