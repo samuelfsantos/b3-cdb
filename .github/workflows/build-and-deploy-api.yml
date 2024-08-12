@@ -38,7 +38,7 @@ jobs:
         run: |
           dotnet tool install --global coverlet.console
           $env:Path += ";C:\Users\runneradmin\.dotnet\tools"
-          coverlet .\B3.Cdb.Test\bin\Release\B3.Cdb.Test.dll --target "dotnet" --targetargs "test .\B3.Cdb.Test\B3.Cdb.Test.csproj --no-build --configuration Release --logger trx;LogFileName=.\B3.Cdb.Test\TestResults\test-results.trx" --output .\B3.Cdb.Test\TestResults\coverage.cobertura.xml --format cobertura
+          coverlet .\B3.Cdb.Test\bin\Release\B3.Cdb.Test.dll --target "dotnet" --targetargs "test .\B3.Cdb.Test\B3.Cdb.Test.csproj --no-build --configuration Release --logger trx;LogFileName=${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\test-results.trx" --output .\B3.Cdb.Test\TestResults\coverage.cobertura.xml --format cobertura
 
       - name: List Test Results Directory
         run: Get-ChildItem -Path .\B3.Cdb.Test\TestResults\ -Recurse | Format-Table -Property FullName
@@ -57,12 +57,24 @@ jobs:
             Write-Error "Coverage file not found: ${{ env.COVERAGE_FILE }}"
           }
 
+      - name: Wait for Test Results
+        run: |
+          $filePath = "${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\test-results.trx"
+          $attempts = 10
+          while (-Not (Test-Path $filePath) -and $attempts -gt 0) {
+            Start-Sleep -Seconds 5
+            $attempts--
+          }
+          if (-Not (Test-Path $filePath)) {
+            Write-Error "Test results file not found: $filePath"
+          }
+
       - name: Publish Test Results
         if: always()
         uses: actions/upload-artifact@v3
         with:
           name: test-results
-          path: .\B3.Cdb.Test\TestResults\test-results.trx
+          path: ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\test-results.trx
           if-no-files-found: warn
 
       - name: List Published Files
