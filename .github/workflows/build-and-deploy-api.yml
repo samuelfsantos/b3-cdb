@@ -36,7 +36,7 @@ jobs:
       
       - name: Test
         run: |
-          dotnet test .\B3.Cdb.Test\B3.Cdb.Test.csproj --configuration Release --logger "trx;LogFileName=TestResults/test-results.trx" --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=.\B3.Cdb.Test\TestResults\coverage.cobertura.xml
+          dotnet test .\B3.Cdb.Test\B3.Cdb.Test.csproj --configuration Release --logger "trx;LogFileName=TestResults/test-results.trx" --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=.\B3.Cdb.Test\TestResults\coverage.
         continue-on-error: false
 
       - name: List Test Results and Coverage Files
