@@ -65,6 +65,12 @@ jobs:
             Write-Error "Coverage file not found: ${{ env.COVERAGE_FILE }}"
           }
 
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: ${{ github.workspace }}\CoverageReport\Cobertura.xml
+
       - name: Wait for Test Results
         run: |
           $filePath = "${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\test-results.trx"
@@ -105,6 +111,11 @@ jobs:
         working-directory: ./src/B3.Cdb
     steps:
       - uses: actions/checkout@v3
+
+      - name: Download Coverage Report
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage-report
 
       - name: Setup Java
         uses: actions/setup-java@v3
