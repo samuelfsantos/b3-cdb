@@ -36,7 +36,7 @@ jobs:
       
       - name: Test
         run: |
-          vstest.console.exe .\B3.Cdb.Test\bin\Release\B3.Cdb.Test.dll /Logger:trx /EnableCodeCoverage
+          dotnet test .\B3.Cdb.Test\B3.Cdb.Test.csproj --configuration Release --logger "trx;LogFileName=test-results.trx" --collect:"Code Coverage"
         continue-on-error: false
 
       - name: Publish Test Results
