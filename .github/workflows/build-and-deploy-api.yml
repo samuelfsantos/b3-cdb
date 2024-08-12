@@ -45,7 +45,9 @@ jobs:
 
       - name: Test with Coverlet
         run: |
-          dotnet test B3.Cdb.Test/B3.Cdb.Test.csproj --no-build --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=TestResults/coverage.cobertura.xml /logger:trx;LogFileName=TestResults/test-results.trx
+          dotnet tool install --global coverlet.console
+          $env:Path += ";C:\Users\runneradmin\.dotnet\tools"
+          coverlet .\B3.Cdb.Test\bin\Release\B3.Cdb.Test.dll --target "dotnet" --targetargs "test .\B3.Cdb.Test\B3.Cdb.Test.csproj --no-build --configuration Release --logger trx;LogFileName=${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\test-results.trx" --output .\B3.Cdb.Test\TestResults\coverage.cobertura.xml --format cobertura
 
       - name: List Test Results Directory
         run: Get-ChildItem -Path .\B3.Cdb.Test\TestResults\ -Recurse | Format-Table -Property FullName
@@ -62,8 +64,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
         run: |
           dotnet tool install --global dotnet-sonarscanner
-          $env:Path += ";C:\Users\runneradmin\.dotnet\tools"
-          dotnet-sonarscanner begin /k:"b3-cdb-api" /d:sonar.host.url="${{ env.SONAR_HOST_URL }}" /d:sonar.login="${{ secrets.SONARQUBE_TOKEN }}" /d:sonar.cs.vstest.reportsPaths="${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\test-results.trx" /d:sonar.cs.opencover.reportsPaths="${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\coverage.cobertura.xml"
+          export PATH="$PATH:~/.dotnet/tools"
+          dotnet-sonarscanner begin /k:"b3-cdb-api" /d:sonar.host.url="${{ env.SONAR_HOST_URL }}" /d:sonar.login="${{ secrets.SONARQUBE_TOKEN }}" /d:sonar.cs.vstest.reportsPaths="${{ github.workspace }}\CoverageReport\test-results.trx" /d:sonar.cs.opencover.reportsPaths="${{ github.workspace }}\CoverageReport\Cobertura.xml"
           msbuild B3.Cdb.sln
           dotnet sonarscanner end /d:sonar.login="${{ secrets.SONARQUBE_TOKEN }}"
 
