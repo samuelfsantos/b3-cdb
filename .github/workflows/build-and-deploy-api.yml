@@ -36,25 +36,11 @@ jobs:
       
       - name: Test
         run: |
-          dotnet test .\B3.Cdb.Test\B3.Cdb.Test.csproj --configuration Release --logger "trx;LogFileName=TestResults/test-results.trx" --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=TestResults/coverage.cobertura.xml
+          dotnet test .\B3.Cdb.Test\B3.Cdb.Test.csproj --configuration Release --logger "trx;LogFileName=TestResults/test-results.trx" --collect:"XPlat Code Coverage" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=.\B3.Cdb.Test\TestResults\coverage.cobertura.xml
         continue-on-error: false
 
-      - name: List Test Results Directory
+      - name: List Test Results and Coverage Files
         run: Get-ChildItem -Path .\B3.Cdb.Test\TestResults\ -Recurse
-
-      - name: Publish Test Results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\TestResults\test-results.trx
-          if-no-files-found: warn
-
-      - name: Install ReportGenerator
-        run: dotnet tool install --global dotnet-reportgenerator-globaltool
-
-      - name: List Coverage Files
-        run: Get-ChildItem -Path ${{ github.workspace }}\src\B3.Cdb\B3.Cdb.Test\TestResults\ -Recurse
 
       - name: Convert Coverage Report to XML
         env:
@@ -65,6 +51,17 @@ jobs:
           } else {
             Write-Error "Coverage file not found: ${{ env.COVERAGE_FILE }}"
           }
+
+      - name: Publish Test Results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: .\B3.Cdb.Test\TestResults\TestResults\*.trx
+          if-no-files-found: warn
+
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
       - name: List Published Files
         run: Get-ChildItem -Path ${{ github.workspace }}\publish -Recurse | Format-Table -Property FullName
