@@ -76,11 +76,16 @@ jobs:
             Write-Error "Coverage report not found after generation."
           }
 
+      - name: List Coverage Directory Before Upload
+        run: |
+          Write-Host "Listing coverage files before upload:"
+          Get-ChildItem -Path "${{ github.workspace }}\CoverageReport" -Recurse | Format-Table -Property FullName
+
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v3
         with:
           name: coverage-report
-          path: ${{ github.workspace }}\CoverageReport\
+          path: ${{ github.workspace }}\CoverageReport\Cobertura.xml
 
       - name: Wait for Test Results
         run: |
