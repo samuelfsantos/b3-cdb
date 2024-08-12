@@ -38,7 +38,7 @@ jobs:
         run: |
           dotnet tool install --global coverlet.console
           $env:Path += ";C:\Users\runneradmin\.dotnet\tools"
-          coverlet .\B3.Cdb.Test\bin\Release\B3.Cdb.Test.dll --target "dotnet" --targetargs "test .\B3.Cdb.Test\B3.Cdb.Test.csproj --no-build --configuration Release --logger trx;LogFileName=test-results.trx" --output .\B3.Cdb.Test\TestResults\coverage.cobertura.xml --format cobertura
+          coverlet .\B3.Cdb.Test\bin\Release\B3.Cdb.Test.dll --target "dotnet" --targetargs "test .\B3.Cdb.Test\B3.Cdb.Test.csproj --no-build --configuration Release --logger trx;LogFileName=.\B3.Cdb.Test\TestResults\test-results.trx" --output .\B3.Cdb.Test\TestResults\coverage.cobertura.xml --format cobertura
 
       - name: List Test Results Directory
         run: Get-ChildItem -Path .\B3.Cdb.Test\TestResults\ -Recurse
@@ -62,7 +62,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: test-results
-          path: .\B3.Cdb.Test\TestResults\**\*.trx
+          path: .\B3.Cdb.Test\TestResults\test-results.trx
           if-no-files-found: warn
 
       - name: List Published Files
