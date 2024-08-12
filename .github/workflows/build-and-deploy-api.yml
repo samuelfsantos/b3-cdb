@@ -35,7 +35,8 @@ jobs:
         run: msbuild B3.Cdb.sln /p:Configuration=Release /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:publishUrl=${{ github.workspace }}\publish /p:PrecompileBeforePublish=true /p:EnableUpdateable=false
       
       - name: Test
-        run: dotnet test .\B3.Cdb.Test\B3.Cdb.Test.csproj --configuration Release --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura
+        run: |
+          vstest.console.exe .\B3.Cdb.Test\bin\Release\B3.Cdb.Test.dll /Logger:trx /EnableCodeCoverage
         continue-on-error: false
 
       - name: Publish Test Results
