@@ -60,7 +60,10 @@ jobs:
         run: |
           $env:Path += ";C:\Users\runneradmin\.dotnet\tools"
           if (Test-Path "${{ env.COVERAGE_FILE }}") {
+            Write-Host "Generating coverage report..."
             reportgenerator "-reports:${{ env.COVERAGE_FILE }}" "-targetdir:${{ github.workspace }}\CoverageReport" "-reporttypes:Cobertura"
+            Write-Host "Coverage report generated."
+            Get-ChildItem -Path "${{ github.workspace }}\CoverageReport" -Recurse | Format-Table -Property FullName
           } else {
             Write-Error "Coverage file not found: ${{ env.COVERAGE_FILE }}"
           }
@@ -118,7 +121,9 @@ jobs:
           name: coverage-report
 
       - name: List Files in Coverage Report
-        run: ls -la ./CoverageReport/
+        run: |
+          echo "Checking CoverageReport directory contents..."
+          ls -la ./CoverageReport/
 
       - name: Setup Java
         uses: actions/setup-java@v3
